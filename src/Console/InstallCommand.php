@@ -182,6 +182,15 @@ class InstallCommand extends Command
                 ],
                 $environment
             );
+
+            // Fix for browser access soketi container
+            $environment = preg_replace([
+                "/\n{$frontendPrefix}_PUSHER_HOST=(.*)/",
+                "/\n{$frontendPrefix}_PUSHER_PORT=(.*)/",
+            ], [
+                "\n{$frontendPrefix}_PUSHER_HOST=localhost",
+                "\n{$frontendPrefix}_PUSHER_HOST=" . env('FORWARD_SOKETI_PORT', 6001),
+            ], $environment);
         }
 
         file_put_contents($this->laravel->basePath('.env'), $environment);
